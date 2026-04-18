@@ -4,7 +4,7 @@ import Sidebar from "../../components/layout/Sidebar";
 const NAV_ITEMS = [
   {
     to: "/doctor/schedule",
-    label: "Schedule",
+    label: "Today's Schedule",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   },
   {
     to: "/doctor/queue",
-    label: "Queue",
+    label: "Appointment Queue",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -28,7 +28,7 @@ const NAV_ITEMS = [
   },
   {
     to: "/doctor/availability",
-    label: "Availability",
+    label: "Manage Availability",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -38,7 +38,7 @@ const NAV_ITEMS = [
   },
   {
     to: "/doctor/patients",
-    label: "Patients",
+    label: "My Patients",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
