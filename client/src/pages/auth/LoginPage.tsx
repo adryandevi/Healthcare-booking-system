@@ -5,10 +5,6 @@ import { useAuth } from "../../hooks/useAuth";
 
 type Role = "patient" | "doctor" | "admin";
 
-interface Props {
-  onSwitchToRegister: () => void;
-}
-
 const ROLE_DEMO: Record<Role, { email: string; password: string }> = {
   patient: { email: "patient@medibook.com", password: "demo1234" },
   doctor:  { email: "doctor@medibook.com",  password: "demo1234" },
@@ -21,16 +17,16 @@ const ROLE_REDIRECTS: Record<Role, string> = {
   admin:   "/admin/overview",
 };
 
-export default function LoginPage({ onSwitchToRegister }: Props) {
+export default function LoginPage() {
   const { login } = useAuth();
-  const navigate   = useNavigate();
+  const navigate  = useNavigate();
 
-  const [email,      setEmail]      = useState("");
-  const [password,   setPassword]   = useState("");
-  const [remember,   setRemember]   = useState(true);
-  const [showPass,   setShowPass]   = useState(false);
-  const [loading,    setLoading]    = useState(false);
-  const [error,      setError]      = useState<string | null>(null);
+  const [email,    setEmail]    = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
+  const [showPass, setShowPass] = useState(false);
+  const [loading,  setLoading]  = useState(false);
+  const [error,    setError]    = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -62,13 +58,11 @@ export default function LoginPage({ onSwitchToRegister }: Props) {
 
   return (
     <div>
-      {/* Heading */}
       <h2 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h2>
       <p className="text-slate-500 text-sm mb-7">
         Enter your credentials to access your account.
       </p>
 
-      {/* Error strip */}
       {error && (
         <div className="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
           {error}
@@ -113,18 +107,23 @@ export default function LoginPage({ onSwitchToRegister }: Props) {
               tabIndex={-1}
             >
               {showPass ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
               ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
               )}
             </button>
           </div>
           <button
             type="button"
-            className="mt-2 text-sm font-medium transition"
+            className="mt-2 text-sm font-medium"
             style={{ color: "#0da88b" }}
-            onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#0b9078")}
-            onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#0da88b")}
           >
             Forgot password?
           </button>
@@ -147,8 +146,6 @@ export default function LoginPage({ onSwitchToRegister }: Props) {
           disabled={loading}
           className="w-full rounded-xl py-3.5 text-sm font-semibold text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
           style={{ backgroundColor: "#0da88b" }}
-          onMouseEnter={(e) => { if (!loading) (e.currentTarget.style.backgroundColor = "#0b9078"); }}
-          onMouseLeave={(e) => { (e.currentTarget.style.backgroundColor = "#0da88b"); }}
         >
           {loading ? "Logging in…" : "Log in"}
         </button>
@@ -176,13 +173,13 @@ export default function LoginPage({ onSwitchToRegister }: Props) {
         ))}
       </div>
 
-      {/* Sign up link */}
+      {/* Sign up */}
       <p className="mt-8 text-center text-sm text-slate-500">
         Don't have an account?{" "}
         <button
           type="button"
-          onClick={onSwitchToRegister}
-          className="font-semibold transition"
+          onClick={() => navigate("/auth/register")}
+          className="font-semibold"
           style={{ color: "#0da88b" }}
         >
           Sign up free
