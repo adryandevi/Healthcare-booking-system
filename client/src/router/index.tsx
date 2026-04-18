@@ -1,25 +1,35 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import AuthPage      from "../pages/auth/AuthPage";
-import LoginPage     from "../pages/auth/LoginPage";
-import RegisterPage  from "../pages/auth/RegisterPage";
+// Auth
+import AuthPage     from "../pages/auth/AuthPage";
+import LoginPage    from "../pages/auth/LoginPage";
+import RegisterPage from "../pages/auth/RegisterPage";
 
+// Patient
 import PatientLayout           from "../pages/patient/PatientLayout";
 import DashboardPage           from "../pages/patient/DashboardPage";
 import BookAppointmentPage     from "../pages/patient/BookAppointmentPage";
 import PatientAppointmentsPage from "../pages/patient/AppointmentsPage";
 import ProfilePage             from "../pages/patient/ProfilePage";
 
-import DoctorLayout      from "../pages/doctor/DoctorLayout";
-import SchedulePage      from "../pages/doctor/SchedulePage";
-import QueuePage         from "../pages/doctor/QueuePage";
-import AvailabilityPage  from "../pages/doctor/AvailabilityPage";
-import DoctorPatientsPage from "../pages/doctor/PatientsPage";
+// Doctor
+import DoctorLayout       from "../pages/doctor/DoctorLayout";
+import SchedulePage        from "../pages/doctor/SchedulePage";
+import QueuePage           from "../pages/doctor/QueuePage";
+import AvailabilityPage    from "../pages/doctor/AvailabilityPage";
+import DoctorPatientsPage  from "../pages/doctor/PatientsPage";
+
+// Admin
+import AdminLayout        from "../pages/admin/AdminLayout";
+import OverviewPage       from "../pages/admin/OverviewPage";
+import AdminAppointmentsPage from "../pages/admin/AppointmentsPage";
+import DoctorsPage        from "../pages/admin/DoctorsPage";
+import AdminPatientsPage  from "../pages/admin/PatientsPage";
 
 export default function AppRouter() {
   return (
     <Routes>
-      {/* DEFAULT → LOGIN */}
+      {/* DEFAULT */}
       <Route path="/" element={<Navigate to="/auth/login" replace />} />
 
       {/* AUTH */}
@@ -47,6 +57,16 @@ export default function AppRouter() {
         <Route path="patients"     element={<DoctorPatientsPage />} />
       </Route>
 
+      {/* ADMIN */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="overview" replace />} />
+        <Route path="overview"     element={<OverviewPage />} />
+        <Route path="appointments" element={<AdminAppointmentsPage />} />
+        <Route path="doctors"      element={<DoctorsPage />} />
+        <Route path="patients"     element={<AdminPatientsPage />} />
+      </Route>
+
+      {/* 404 */}
       <Route path="*" element={<h1 className="p-8 text-2xl font-bold text-slate-900">404 — Page not found</h1>} />
     </Routes>
   );
