@@ -18,7 +18,7 @@ interface SidebarProps {
 export default function Sidebar({ navItems, user }: SidebarProps) {
   return (
     <aside
-      className="w-64 flex-shrink-0 flex flex-col h-screen"
+      className="w-60 flex-shrink-0 flex flex-col h-screen"
       style={{ backgroundColor: "#0d1f2d" }}
     >
       {/* ── Logo ── */}

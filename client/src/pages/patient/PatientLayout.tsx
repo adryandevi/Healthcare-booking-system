@@ -54,9 +54,9 @@ const PATIENT_USER = {
 
 export default function PatientLayout() {
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="h-screen flex overflow-hidden bg-slate-50">
       <Sidebar navItems={NAV_ITEMS} user={PATIENT_USER} />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto h-full">
         <Outlet />
       </main>
     </div>
