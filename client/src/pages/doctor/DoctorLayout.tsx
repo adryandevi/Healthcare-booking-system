@@ -56,7 +56,7 @@ const DOCTOR_USER = {
 
 export default function DoctorLayout() {
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="h-screen overflow-hidden flex bg-slate-50">
       <Sidebar navItems={NAV_ITEMS} user={DOCTOR_USER} />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
