@@ -56,11 +56,11 @@ const ADMIN_USER = {
 
 export default function AdminLayout() {
   return (
-    <div className="min-h-screen flex bg-slate-50">
-      <Sidebar navItems={NAV_ITEMS} user={ADMIN_USER} />
-      <main className="flex-1 overflow-y-auto">
-        <Outlet />
-      </main>
+    <div className="h-screen overflow-hidden flex bg-slate-50">
+        <Sidebar navItems={NAV_ITEMS} user={ADMIN_USER} />
+          <main className="flex-1 overflow-y-auto">
+            <Outlet />
+          </main>
     </div>
   );
 }
