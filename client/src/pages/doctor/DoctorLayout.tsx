@@ -1,5 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Sidebar from "../../components/layout/Sidebar";
+import { useNavigate, Outlet } from "react-router-dom";
+import { useAuth }             from "../../hooks/useAuth";
+import Sidebar                 from "../../components/layout/Sidebar";
 
 const NAV_ITEMS = [
   {
@@ -48,16 +49,23 @@ const NAV_ITEMS = [
   },
 ];
 
-const DOCTOR_USER = {
-  name:     "Dr. James Rivera",
-  role:     "Doctor",
-  initials: "JR",
-};
-
 export default function DoctorLayout() {
+  const { logout, user } = useAuth();
+  const navigate         = useNavigate();
+
+  const handleLogout = () => { logout(); navigate("/auth"); };
+
+  const DOCTOR_USER = {
+    name:     user?.name ?? "Doctor",
+    role:     "Doctor",
+    initials: user?.name
+      ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+      : "DR",
+  };
+
   return (
     <div className="h-screen overflow-hidden flex bg-slate-50">
-      <Sidebar navItems={NAV_ITEMS} user={DOCTOR_USER} />
+      <Sidebar navItems={NAV_ITEMS} user={DOCTOR_USER} onLogout={handleLogout} />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>

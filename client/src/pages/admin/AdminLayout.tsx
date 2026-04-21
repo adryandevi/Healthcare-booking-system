@@ -1,5 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Sidebar from "../../components/layout/Sidebar";
+import { useNavigate, Outlet } from "react-router-dom";
+import { useAuth }             from "../../hooks/useAuth";
+import Sidebar                 from "../../components/layout/Sidebar";
 
 const NAV_ITEMS = [
   {
@@ -48,19 +49,27 @@ const NAV_ITEMS = [
   },
 ];
 
-const ADMIN_USER = {
-  name:     "Admin User",
-  role:     "Administrator",
-  initials: "AU",
-};
-
+// src/pages/admin/AdminLayout.tsx
 export default function AdminLayout() {
+  const { logout, user } = useAuth();
+  const navigate         = useNavigate();
+
+  const handleLogout = () => { logout(); navigate("/auth"); };
+
+  const ADMIN_USER = {
+    name:     user?.name ?? "Admin",
+    role:     "Admin",
+    initials: user?.name
+      ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+      : "AD",
+  };
+
   return (
     <div className="h-screen overflow-hidden flex bg-slate-50">
-        <Sidebar navItems={NAV_ITEMS} user={ADMIN_USER} />
-          <main className="flex-1 overflow-y-auto">
-            <Outlet />
-          </main>
+      <Sidebar navItems={NAV_ITEMS} user={ADMIN_USER} onLogout={handleLogout} />
+      <main className="flex-1 overflow-y-auto">
+        <Outlet />
+      </main>
     </div>
   );
 }

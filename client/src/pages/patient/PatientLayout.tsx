@@ -1,6 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Sidebar from "../../components/layout/Sidebar";
-
+import { useNavigate, Outlet } from "react-router-dom";
+import { useAuth }             from "../../hooks/useAuth";
+import Sidebar                 from "../../components/layout/Sidebar";
 
 const NAV_ITEMS = [
   {
@@ -47,16 +47,26 @@ const NAV_ITEMS = [
   },
 ];
 
-const PATIENT_USER = {
-  name:     "Maria Santos",
-  role:     "Patient",
-  initials: "MS",
-};
-
 export default function PatientLayout() {
+  const { logout, user } = useAuth();
+  const navigate         = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
+  };
+
+  const PATIENT_USER = {
+    name:     user?.name     ?? "Patient",
+    role:     "Patient",
+    initials: user?.name
+      ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+      : "P",
+  };
+
   return (
     <div className="h-screen flex overflow-hidden bg-slate-50">
-      <Sidebar navItems={NAV_ITEMS} user={PATIENT_USER} />
+      <Sidebar navItems={NAV_ITEMS} user={PATIENT_USER} onLogout={handleLogout} />
       <main className="flex-1 overflow-y-auto h-full">
         <Outlet />
       </main>
