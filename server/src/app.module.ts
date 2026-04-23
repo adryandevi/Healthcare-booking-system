@@ -7,9 +7,17 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PrismaModule } from './config/prisma.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, AppointmentsModule, DoctorsModule, PatientsModule, NotificationsModule],
+  imports: [
+    AuthModule, 
+    UsersModule, 
+    AppointmentsModule, 
+    DoctorsModule, 
+    PatientsModule, 
+    NotificationsModule, 
+    PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })
