@@ -1,4 +1,86 @@
-import { Controller } from '@nestjs/common';
+// src/modules/appointments/appointment.controller.ts
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { AppointmentService }         from "./appointments.service";
+import { CreateAppointmentDto }     from "./dto/create-appointment.dto";
+import { RescheduleAppointmentDto } from "./dto/reschedule-appointment.dto";
+import { CancelAppointmentDto }     from "./dto/cancel-appointment.dto";
+import { FilterAppointmentDto }     from "./dto/filter-appointment.dto";
+import { AuthGuard }                from "../../common/guards/auth.guard";
+import { RolesGuard }               from "../../common/guards/roles.guard";
+import { Roles }                    from "../../common/decorators/roles.decorator";
+import { CurrentUser }              from "../../common/decorators/current-user.decorator";
+import { Role }                     from "../../common/enums/role.enum";
 
-@Controller('appointments')
-export class AppointmentsController {}
+@Controller("appointments")
+@UseGuards(AuthGuard, RolesGuard)
+export class AppointmentController {
+  constructor(private readonly appointmentService: AppointmentService) {}
+
+  @Post()
+  @Roles(Role.PATIENT)
+  book(
+    @CurrentUser() user: { sub: string },
+    @Body() dto: CreateAppointmentDto,
+  ) {
+    return this.appointmentService.book(user.sub, dto);
+  }
+
+  @Get("my")
+  @Roles(Role.PATIENT)
+  getMyAppointments(@CurrentUser() user: { sub: string }) {
+    return this.appointmentService.getByPatient(user.sub);
+  }
+
+  @Get("doctor")
+  @Roles(Role.DOCTOR)
+  getDoctorAppointments(@CurrentUser() user: { sub: string }) {
+    return this.appointmentService.getByDoctor(user.sub);
+  }
+
+  @Get()
+  @Roles(Role.ADMIN)
+  getAll(@Query() filters: FilterAppointmentDto) {
+    return this.appointmentService.getAll(filters);
+  }
+
+  @Get(":id")
+  @Roles(Role.ADMIN, Role.DOCTOR, Role.PATIENT)
+  findById(@Param("id") id: string) {
+    return this.appointmentService.findById(id);
+  }
+
+  @Patch(":id/confirm")
+  @Roles(Role.DOCTOR)
+  confirm(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string },
+  ) {
+    return this.appointmentService.confirm(id, user.sub);
+  }
+
+  @Patch(":id/cancel")
+  @Roles(Role.PATIENT, Role.DOCTOR, Role.ADMIN)
+  cancel(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string },
+    @Body() dto: CancelAppointmentDto,
+  ) {
+    return this.appointmentService.cancel(id, user.sub, dto);
+  }
+
+  @Patch(":id/reschedule")
+  @Roles(Role.PATIENT)
+  reschedule(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string },
+    @Body() dto: RescheduleAppointmentDto,
+  ) {
+    return this.appointmentService.reschedule(id, user.sub, dto);
+  }
+
+  @Patch(":id/force-confirm")
+  @Roles(Role.ADMIN)
+  forceConfirm(@Param("id") id: string) {
+    return this.appointmentService.forceConfirm(id);
+  }
+}
