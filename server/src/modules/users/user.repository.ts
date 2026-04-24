@@ -1,3 +1,4 @@
+// src/modules/users/user.repository.ts
 import { Injectable }    from "@nestjs/common";
 import { PrismaService } from "../../config/prisma.service";
 import type { Prisma }   from "../../generated/prisma";
@@ -6,12 +7,41 @@ import type { Prisma }   from "../../generated/prisma";
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findAll() {
+    return this.prisma.db.user.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id:        true,
+        email:     true,
+        role:      true,
+        isActive:  true,
+        createdAt: true,
+        updatedAt: true,
+        // password excluded — never return it in lists
+      },
+    });
+  }
+
   async findById(id: string) {
-    return this.prisma.db.user.findUnique({ where: { id } });
+    return this.prisma.db.user.findUnique({
+      where: { id },
+      select: {
+        id:        true,
+        email:     true,
+        role:      true,
+        isActive:  true,
+        createdAt: true,
+        updatedAt: true,
+        // password excluded
+      },
+    });
   }
 
   async findByEmail(email: string) {
-    return this.prisma.db.user.findUnique({ where: { email } });
+    return this.prisma.db.user.findUnique({
+      where: { email },
+      // password INCLUDED here — needed for bcrypt compare in auth
+    });
   }
 
   async create(data: Prisma.UserCreateInput) {
