@@ -1,11 +1,27 @@
-import { Module } from '@nestjs/common';
-import { DoctorsController } from './doctors.controller';
-import { DoctorsService } from './doctors.service';
-import { AvailabilityService } from './availability/availability.service';
-import { AvailabilityController } from './availability/availability.controller';
+import { Module }                 from "@nestjs/common";
+import { DoctorService }          from "./doctors.service";
+import { DoctorRepository }       from "./doctor.repository";
+import { DoctorController }       from "./doctors.controller";
+import { AvailabilityService }    from "../doctors/availability/availability.service";
+import { AvailabilityController } from "../doctors/availability/availability.controller";
+import { AppointmentsModule }     from "../appointments/appointments.module";
 
 @Module({
-  controllers: [DoctorsController, AvailabilityController],
-  providers: [DoctorsService, AvailabilityService]
+  imports: [
+    AppointmentsModule,   // needs AppointmentRepository for slot checking
+  ],
+  providers: [
+    DoctorService,
+    DoctorRepository,
+    AvailabilityService,
+  ],
+  controllers: [
+    DoctorController,
+    AvailabilityController,
+  ],
+  exports: [
+    DoctorService,
+    DoctorRepository,   // exported so AuthService can create doctor profile on register
+  ],
 })
-export class DoctorsModule {}
+export class DoctorModule {}

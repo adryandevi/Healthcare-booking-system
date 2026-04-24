@@ -1,4 +1,3 @@
-// src/modules/doctors/availability.service.ts
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { DoctorRepository }              from "../doctor.repository"
 import { AppointmentRepository }         from "../../appointments/appointment.repository"
