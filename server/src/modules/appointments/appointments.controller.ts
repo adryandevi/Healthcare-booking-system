@@ -10,6 +10,7 @@ import { RolesGuard }               from "../../common/guards/roles.guard";
 import { Roles }                    from "../../common/decorators/roles.decorator";
 import { CurrentUser }              from "../../common/decorators/current-user.decorator";
 import { Role }                     from "../../common/enums/role.enum";
+import { PaginationDto } from "src/common/dto/pagination.dto";
 
 @Controller("appointments")
 @UseGuards(AuthGuard, RolesGuard)
@@ -27,20 +28,41 @@ export class AppointmentController {
 
   @Get("my")
   @Roles(Role.PATIENT)
-  getMyAppointments(@CurrentUser() user: { sub: string }) {
-    return this.appointmentService.getByPatient(user.sub);
+  getMyAppointments(
+    @CurrentUser() user:       { sub: string },
+    @Query()       pagination: PaginationDto,
+  ) {
+    return this.appointmentService.getByPatient(
+      user.sub,
+      pagination.page,
+      pagination.limit,
+    );
   }
 
   @Get("doctor")
   @Roles(Role.DOCTOR)
-  getDoctorAppointments(@CurrentUser() user: { sub: string }) {
-    return this.appointmentService.getByDoctor(user.sub);
+  getDoctorAppointments(
+    @CurrentUser() user:       { sub: string },
+    @Query()       pagination: PaginationDto,
+  ) {
+    return this.appointmentService.getByDoctor(
+      user.sub,
+      pagination.page,
+      pagination.limit,
+    );
   }
 
   @Get()
   @Roles(Role.ADMIN)
-  getAll(@Query() filters: FilterAppointmentDto) {
-    return this.appointmentService.getAll(filters);
+  getAll(
+    @Query() filters:    FilterAppointmentDto,
+    @Query() pagination: PaginationDto,
+  ) {
+    return this.appointmentService.getAll(
+      filters,
+      pagination.page,
+      pagination.limit,
+    );
   }
 
   @Get(":id")

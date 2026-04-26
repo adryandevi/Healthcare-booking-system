@@ -108,20 +108,24 @@ export class AppointmentService {
     return { message: "Appointment force confirmed by admin" };
   }
 
-  async getByPatient(patientId: string) {
-    return this.appointmentRepo.findByPatient(patientId);
+  async getByPatient(patientId: string, page = 1, limit = 10) {
+    return this.appointmentRepo.findByPatient(patientId, page, limit);
   }
 
-  async getByDoctor(doctorId: string) {
-    return this.appointmentRepo.findByDoctor(doctorId);
+  async getByDoctor(doctorId: string, page = 1, limit = 10) {
+    return this.appointmentRepo.findByDoctor(doctorId, page, limit);
   }
 
-  async getAll(filters?: FilterAppointmentDto) {
-    return this.appointmentRepo.findAll({
-      status:    filters?.status,
-      doctorId:  filters?.doctorId,
-      patientId: filters?.patientId,
-    });
+  async getAll(filters?: FilterAppointmentDto, page = 1, limit = 20) {
+    return this.appointmentRepo.findAll(
+      {
+        status:    filters?.status,
+        doctorId:  filters?.doctorId,
+        patientId: filters?.patientId,
+      },
+      page,
+      limit,
+    );
   }
 
   async findById(id: string) {

@@ -7,8 +7,8 @@ import { UpdatePatientDto }              from "./dto/update-patient.dto";
 export class PatientService {
   constructor(private readonly patientRepo: PatientRepository) {}
 
-  async findAll() {
-    return this.patientRepo.findAll();
+  async findAll(page = 1, limit = 20) {
+    return this.patientRepo.findAll(page, limit);
   }
 
   async findById(id: string) {

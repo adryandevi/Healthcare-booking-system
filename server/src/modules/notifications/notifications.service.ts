@@ -2,6 +2,7 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { PrismaService }                          from "../../config/prisma.service";
 import { TEMPLATES }                             from "./notification.templates";
+import { paginate } from "src/common/helpers/paginate.helper";
 
 @Injectable()
 export class NotificationService {
@@ -9,11 +10,20 @@ export class NotificationService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async getByUser(userId: string) {
-    return this.prisma.db.notification.findMany({
-      where:   { userId },
-      orderBy: { createdAt: "desc" },
-    });
+  async getByUser(userId: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.db.notification.findMany({
+        where:   { userId },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      this.prisma.db.notification.count({ where: { userId } }),
+    ]);
+
+    return paginate(data, total, page, limit);
   }
 
   async getUnreadCount(userId: string) {
