@@ -1,9 +1,9 @@
 // src/modules/appointments/appointment.repository.ts
 import { Injectable }        from "@nestjs/common";
 import { PrismaService }     from "../../config/prisma.service";
-import { AppointmentStatus } from "../../generated/prisma";
+import { AppointmentStatus } from "@prisma/client";
 import { paginate }          from "../../common/helpers/paginate.helper";
-import type { Prisma }       from "../../generated/prisma";
+import type { Prisma }       from "@prisma/client";
 
 @Injectable()
 export class AppointmentRepository {

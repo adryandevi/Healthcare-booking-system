@@ -1,7 +1,7 @@
 import { Injectable }    from "@nestjs/common";
 import { PrismaService } from "../../config/prisma.service";
 import { paginate }      from "../../common/helpers/paginate.helper";
-import type { Prisma }   from "../../generated/prisma";
+import type { Prisma }   from "@prisma/client";
 
 @Injectable()
 export class PatientRepository {

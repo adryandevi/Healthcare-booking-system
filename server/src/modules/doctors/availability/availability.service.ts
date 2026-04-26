@@ -4,7 +4,7 @@ import { AppointmentRepository }         from "../../appointments/appointment.re
 import { PrismaService }                from "../../../config/prisma.service"
 import { UpdateAvailabilityDto }         from "../dto/update-availability.dto"
 import { BlockDateDto }                 from "../dto/block-date.dto"
-import { AppointmentStatus }            from "../../../generated/prisma";
+import { AppointmentStatus }            from "@prisma/client";
 
 @Injectable()
 export class AvailabilityService {

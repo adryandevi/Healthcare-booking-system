@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from "class-validator";
-import { DoctorStatus }                 from "../../../generated/prisma";
+import { DoctorStatus }                 from "@prisma/client";
 
 export class UpdateDoctorDto {
   @IsOptional()

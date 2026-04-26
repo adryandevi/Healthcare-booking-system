@@ -8,7 +8,7 @@ import { CreateAppointmentDto }     from "./dto/create-appointment.dto";
 import { RescheduleAppointmentDto } from "./dto/reschedule-appointment.dto";
 import { CancelAppointmentDto }     from "./dto/cancel-appointment.dto";
 import { FilterAppointmentDto }     from "./dto/filter-appointment.dto";
-import { AppointmentStatus }        from "../../generated/prisma";
+import { AppointmentStatus }        from "@prisma/client";
 
 @Injectable()
 export class AppointmentService {
