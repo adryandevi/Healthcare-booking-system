@@ -1,19 +1,16 @@
 // src/modules/appointments/appointment.controller.ts
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { AppointmentService }         from "./appointments.service";
 import { CreateAppointmentDto }     from "./dto/create-appointment.dto";
 import { RescheduleAppointmentDto } from "./dto/reschedule-appointment.dto";
 import { CancelAppointmentDto }     from "./dto/cancel-appointment.dto";
 import { FilterAppointmentDto }     from "./dto/filter-appointment.dto";
-import { AuthGuard }                from "../../common/guards/auth.guard";
-import { RolesGuard }               from "../../common/guards/roles.guard";
 import { Roles }                    from "../../common/decorators/roles.decorator";
 import { CurrentUser }              from "../../common/decorators/current-user.decorator";
 import { Role }                     from "../../common/enums/role.enum";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 
 @Controller("appointments")
-@UseGuards(AuthGuard, RolesGuard)
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 

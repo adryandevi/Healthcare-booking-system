@@ -1,15 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, } from "@nestjs/common";
 import { AvailabilityService }   from "./availability.service";
 import { UpdateAvailabilityDto } from "../dto/update-availability.dto";
 import { BlockDateDto }          from "../dto/block-date.dto";
-import { AuthGuard }             from "../../../common/guards/auth.guard";
-import { RolesGuard }            from "../../../common/guards/roles.guard";
 import { Roles }                 from "../../../common/decorators/roles.decorator";
 import { CurrentUser }           from "../../../common/decorators/current-user.decorator";
 import { Role }                  from "../../../common/enums/role.enum";
 
 @Controller("doctors")
-@UseGuards(AuthGuard, RolesGuard)
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 

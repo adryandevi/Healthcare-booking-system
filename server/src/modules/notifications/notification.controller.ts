@@ -1,14 +1,11 @@
-import { Controller, Get, Param, Patch, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Patch, Query, } from "@nestjs/common";
 import { NotificationService }  from "./notifications.service";
-import { AuthGuard }           from "../../common/guards/auth.guard";
-import { RolesGuard }          from "../../common/guards/roles.guard";
 import { Roles }               from "../../common/decorators/roles.decorator";
 import { CurrentUser }         from "../../common/decorators/current-user.decorator";
 import { Role }                from "../../common/enums/role.enum";
 import { PaginationDto } from "../../common/dto/pagination.dto";
 
 @Controller("notifications")
-@UseGuards(AuthGuard, RolesGuard)
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 

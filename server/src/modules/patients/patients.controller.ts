@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Query, } from "@nestjs/common";
 import { PatientService }   from "./patients.service";
 import { UpdatePatientDto } from "./dto/update-patient.dto";
 import { AuthGuard }        from "../../common/guards/auth.guard";
@@ -9,7 +9,6 @@ import { Role }             from "../../common/enums/role.enum";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 
 @Controller("patients")
-@UseGuards(AuthGuard, RolesGuard)
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 

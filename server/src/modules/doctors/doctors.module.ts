@@ -5,23 +5,12 @@ import { DoctorController }       from "./doctors.controller";
 import { AvailabilityService }    from "../doctors/availability/availability.service";
 import { AvailabilityController } from "../doctors/availability/availability.controller";
 import { AppointmentsModule }     from "../appointments/appointments.module";
+import { PrismaModule }           from "../../config/prisma.module";
 
 @Module({
-  imports: [
-    AppointmentsModule,   // needs AppointmentRepository for slot checking
-  ],
-  providers: [
-    DoctorService,
-    DoctorRepository,
-    AvailabilityService,
-  ],
-  controllers: [
-    DoctorController,
-    AvailabilityController,
-  ],
-  exports: [
-    DoctorService,
-    DoctorRepository,   // exported so AuthService can create doctor profile on register
-  ],
+  imports:     [PrismaModule, AppointmentsModule],
+  providers:   [DoctorService, DoctorRepository, AvailabilityService],
+  controllers: [DoctorController, AvailabilityController],
+  exports:     [DoctorService, DoctorRepository],
 })
 export class DoctorModule {}

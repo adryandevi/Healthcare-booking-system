@@ -1,11 +1,13 @@
 import { Module }            from "@nestjs/common";
 import { JwtModule }         from "@nestjs/jwt";
+import { APP_GUARD }         from "@nestjs/core";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthService }       from "./auth.service";
 import { AuthController }    from "./auth.controller";
-import { UserModule }        from "../users/users.module";   
-import { PatientModule }     from "../patients/patients.module"; 
-import { DoctorModule }      from "../doctors/doctors.module"; 
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { AuthGuard }         from "../../common/guards/auth.guard";
+import { UserModule }        from "../users/users.module";
+import { PatientModule }     from "../patients/patients.module";
+import { DoctorModule }      from "../doctors/doctors.module";
 
 @Module({
   imports: [
@@ -23,7 +25,14 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       }),
     }),
   ],
-  providers:   [AuthService],
+  providers: [
+    AuthService,
+    AuthGuard,
+    {
+      provide:  APP_GUARD,  // ← every route protected by default
+      useClass: AuthGuard,
+    },
+  ],
   controllers: [AuthController],
   exports:     [AuthService, JwtModule],
 })
