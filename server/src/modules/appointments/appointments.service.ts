@@ -17,8 +17,10 @@ export class AppointmentService {
     private readonly notifications:   NotificationService,
   ) {}
 
-  async book(patientId: string, dto: CreateAppointmentDto) {
-    // check slot availability
+  async book(userId: string, dto: CreateAppointmentDto) {
+    const patient = await this.appointmentRepo.findPatientByUserId(userId);
+    if (!patient) throw new NotFoundException("Patient profile not found");
+
     const conflict  = await this.appointmentRepo.findByDoctorAndDate(
       dto.doctorId, new Date(dto.date)
     );
@@ -33,7 +35,7 @@ export class AppointmentService {
       type:    dto.type,
       notes:   dto.notes,
       status:  AppointmentStatus.pending,
-      patient: { connect: { id: patientId }    },
+      patient: { connect: { id: patient.id } },  // ← patient.id not userId
       doctor:  { connect: { id: dto.doctorId } },
     });
 

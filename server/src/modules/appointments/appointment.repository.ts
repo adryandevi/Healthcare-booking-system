@@ -101,4 +101,10 @@ export class AppointmentRepository {
   async update(id: string, data: Prisma.AppointmentUpdateInput) {
     return this.prisma.db.appointment.update({ where: { id }, data });
   }
+
+  async findPatientByUserId(userId: string) {
+    return this.prisma.db.patient.findUnique({
+      where: { userId },
+    });
+  }
 }
