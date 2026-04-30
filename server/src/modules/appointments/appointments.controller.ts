@@ -77,14 +77,14 @@ export class AppointmentController {
     return this.appointmentService.confirm(id, user.sub);
   }
 
-  @Patch(":id/cancel")
+ @Patch(":id/cancel")
   @Roles(Role.PATIENT, Role.DOCTOR, Role.ADMIN)
   cancel(
     @Param("id") id: string,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role: string },
     @Body() dto: CancelAppointmentDto,
   ) {
-    return this.appointmentService.cancel(id, user.sub, dto);
+    return this.appointmentService.cancel(id, user.sub, user.role, dto);
   }
 
   @Patch(":id/reschedule")

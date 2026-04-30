@@ -3,7 +3,7 @@ import {
   Injectable, NotFoundException,
 } from "@nestjs/common";
 import { AppointmentRepository }    from "./appointment.repository";
-import { NotificationService }     from "../notifications/notifications.service";
+import { NotificationService }      from "../notifications/notifications.service";
 import { CreateAppointmentDto }     from "./dto/create-appointment.dto";
 import { RescheduleAppointmentDto } from "./dto/reschedule-appointment.dto";
 import { CancelAppointmentDto }     from "./dto/cancel-appointment.dto";
@@ -35,7 +35,7 @@ export class AppointmentService {
       type:    dto.type,
       notes:   dto.notes,
       status:  AppointmentStatus.pending,
-      patient: { connect: { id: patient.id } },  // ← patient.id not userId
+      patient: { connect: { id: patient.id } },
       doctor:  { connect: { id: dto.doctorId } },
     });
 
@@ -43,10 +43,12 @@ export class AppointmentService {
     return appointment;
   }
 
-  async confirm(id: string, doctorId: string) {
-    const appt = await this.findOrThrow(id);
+  async confirm(id: string, userId: string) {
+    const appt   = await this.findOrThrow(id);
+    const doctor = await this.appointmentRepo.findDoctorByUserId(userId);
+    if (!doctor) throw new NotFoundException("Doctor profile not found");
 
-    if (appt.doctorId !== doctorId)
+    if (appt.doctorId !== doctor.id)
       throw new ForbiddenException("You can only confirm your own appointments");
     if (appt.status !== AppointmentStatus.pending)
       throw new BadRequestException("Only pending appointments can be confirmed");
@@ -56,12 +58,19 @@ export class AppointmentService {
     return { message: "Appointment confirmed" };
   }
 
-  async cancel(id: string, userId: string, dto: CancelAppointmentDto) {
-    const appt    = await this.findOrThrow(id);
-    const isOwner = appt.patientId === userId || appt.doctorId === userId;
+  async cancel(id: string, userId: string, userRole: string, dto: CancelAppointmentDto) {
+    const appt = await this.findOrThrow(id);
 
-    if (!isOwner)
-      throw new ForbiddenException("You can only cancel your own appointments");
+    // admin can cancel any appointment
+    if (userRole !== 'admin') {
+      const patient = await this.appointmentRepo.findPatientByUserId(userId);
+      const doctor  = await this.appointmentRepo.findDoctorByUserId(userId);
+
+      const isOwner = appt.patientId === patient?.id || appt.doctorId === doctor?.id;
+      if (!isOwner)
+        throw new ForbiddenException("You can only cancel your own appointments");
+    }
+
     if (appt.status === AppointmentStatus.completed)
       throw new BadRequestException("Cannot cancel a completed appointment");
     if (appt.status === AppointmentStatus.cancelled)
@@ -72,31 +81,32 @@ export class AppointmentService {
     return { message: "Appointment cancelled" };
   }
 
-  async reschedule(id: string, patientId: string, dto: RescheduleAppointmentDto) {
-    const appt = await this.findOrThrow(id);
+  async reschedule(id: string, userId: string, dto: RescheduleAppointmentDto) {
+    const appt    = await this.findOrThrow(id);
+    const patient = await this.appointmentRepo.findPatientByUserId(userId);
+    if (!patient) throw new NotFoundException("Patient profile not found");
 
-    if (appt.patientId !== patientId)
+    if (appt.patientId !== patient.id)
       throw new ForbiddenException("You can only reschedule your own appointments");
     if (appt.status === AppointmentStatus.completed)
       throw new BadRequestException("Cannot reschedule a completed appointment");
     if (appt.status === AppointmentStatus.cancelled)
       throw new BadRequestException("Cannot reschedule a cancelled appointment");
 
-    // check new slot availability
     const conflict  = await this.appointmentRepo.findByDoctorAndDate(
       appt.doctorId, new Date(dto.date)
     );
     const slotTaken = conflict.some(
       (a) => a.time === dto.time &&
              a.status !== AppointmentStatus.cancelled &&
-             a.id !== id   // exclude current appointment
+             a.id !== id
     );
     if (slotTaken) throw new BadRequestException("This time slot is already taken");
 
     await this.appointmentRepo.update(id, {
       date:   new Date(dto.date),
       time:   dto.time,
-      status: AppointmentStatus.pending,  // resets to pending after reschedule
+      status: AppointmentStatus.pending,
     });
     return { message: "Appointment rescheduled successfully" };
   }
@@ -110,12 +120,16 @@ export class AppointmentService {
     return { message: "Appointment force confirmed by admin" };
   }
 
-  async getByPatient(patientId: string, page = 1, limit = 10) {
-    return this.appointmentRepo.findByPatient(patientId, page, limit);
+  async getByPatient(userId: string, page = 1, limit = 10) {
+    const patient = await this.appointmentRepo.findPatientByUserId(userId);
+    if (!patient) throw new NotFoundException("Patient profile not found");
+    return this.appointmentRepo.findByPatient(patient.id, page, limit);
   }
 
-  async getByDoctor(doctorId: string, page = 1, limit = 10) {
-    return this.appointmentRepo.findByDoctor(doctorId, page, limit);
+  async getByDoctor(userId: string, page = 1, limit = 10) {
+    const doctor = await this.appointmentRepo.findDoctorByUserId(userId);
+    if (!doctor) throw new NotFoundException("Doctor profile not found");
+    return this.appointmentRepo.findByDoctor(doctor.id, page, limit);
   }
 
   async getAll(filters?: FilterAppointmentDto, page = 1, limit = 20) {

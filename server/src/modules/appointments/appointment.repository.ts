@@ -1,4 +1,3 @@
-// src/modules/appointments/appointment.repository.ts
 import { Injectable }        from "@nestjs/common";
 import { PrismaService }     from "../../config/prisma.service";
 import { AppointmentStatus } from "@prisma/client";
@@ -71,7 +70,6 @@ export class AppointmentRepository {
     return paginate(data, total, page, limit);
   }
 
-  // -- non paginated methods stay the same --
   async findById(id: string) {
     return this.prisma.db.appointment.findUnique({
       where:   { id },
@@ -104,6 +102,12 @@ export class AppointmentRepository {
 
   async findPatientByUserId(userId: string) {
     return this.prisma.db.patient.findUnique({
+      where: { userId },
+    });
+  }
+
+  async findDoctorByUserId(userId: string) {
+    return this.prisma.db.doctor.findUnique({
       where: { userId },
     });
   }
